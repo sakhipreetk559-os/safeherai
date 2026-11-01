@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   X, 
   Share2, 
@@ -22,7 +23,6 @@ export function ShareTripModal({ isOpen, onClose, startPoint, destination, activ
   const etaMins = activeRoute?.durationMin || 24;
   const score = safetyScore || 94;
 
-  // Live tracking URL
   const trackingUrl = `https://safeher.ai/track/${tripId}?lat=${startPoint?.lat || 28.6315}&lng=${startPoint?.lng || 77.2167}`;
 
   const messageText = `🛡️ SafeHer AI Live Journey Tracking:
@@ -40,9 +40,12 @@ Track my live location & route: ${trackingUrl}`;
 
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
 
-  return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-[100000]">
+  const modalNode = (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div 
+        className="relative w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-[1000000]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/60 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
@@ -124,4 +127,6 @@ Track my live location & route: ${trackingUrl}`;
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalNode, document.body) : null;
 }
