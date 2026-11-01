@@ -113,12 +113,13 @@ export default function App() {
 
   // Manual Trigger
   const handleManualCalculate = () => {
+    setActivePresetId(null);
     setRoutes([]);
     setSafetyAnalysis({});
     setNearestHaven(null);
     setActivePois([]);
     const validPoints = [startPoint, ...waypoints.filter(w => w.lat && w.lng), destination];
-    executeRouteCalculation(validPoints, destination, activePresetId);
+    executeRouteCalculation(validPoints, destination, null);
   };
 
   // Toggle filter
@@ -180,6 +181,7 @@ export default function App() {
             setActiveRouteId={setActiveRouteId}
             safetyAnalysis={safetyAnalysis}
             activePresetId={activePresetId}
+            setActivePresetId={setActivePresetId}
           />
 
           {/* Smart Safety Filters */}

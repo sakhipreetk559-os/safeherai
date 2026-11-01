@@ -149,13 +149,10 @@ export function MapView({
     });
     if (destination?.lat && destination?.lng) latLngs.push([destination.lat, destination.lng]);
 
-    // Active route points (ensure coordinates belong to current metro corridor)
+    // Active route points
     const active = routes.find(r => r.id === activeRouteId);
     if (active?.coordinates && active.coordinates.length > 0) {
-      const first = active.coordinates[0];
-      if (!startPoint?.lat || haversineKm(startPoint.lat, startPoint.lng, first[0], first[1]) < 50) {
-        active.coordinates.forEach(c => latLngs.push(c));
-      }
+      active.coordinates.forEach(c => latLngs.push(c));
     }
 
     if (latLngs.length >= 2) {
@@ -268,7 +265,7 @@ export function MapView({
 
         {/* Inactive Alternative Route Polylines */}
         {routes
-          .filter(r => r.id !== activeRouteId && (!startPoint || !r.coordinates?.[0] || haversineKm(startPoint.lat, startPoint.lng, r.coordinates[0][0], r.coordinates[0][1]) < 50))
+          .filter(r => r.id !== activeRouteId && r.coordinates?.length > 0)
           .map(r => (
             <Polyline
               key={r.id}
@@ -286,7 +283,7 @@ export function MapView({
           ))}
 
         {/* Active Route Polyline with Soft Outer Glow */}
-        {activeRoute && (!startPoint || !activeRoute.coordinates?.[0] || haversineKm(startPoint.lat, startPoint.lng, activeRoute.coordinates[0][0], activeRoute.coordinates[0][1]) < 50) && (
+        {activeRoute && activeRoute.coordinates?.length > 0 && (
           <>
             <Polyline
               positions={activeRoute.coordinates}

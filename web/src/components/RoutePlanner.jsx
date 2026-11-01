@@ -35,7 +35,8 @@ export function RoutePlanner({
   activeRouteId,
   setActiveRouteId,
   safetyAnalysis,
-  activePresetId
+  activePresetId,
+  setActivePresetId
 }) {
   const [startQuery, setStartQuery] = useState(startPoint?.name || '');
   const [destQuery, setDestQuery] = useState(destination?.name || '');
@@ -61,6 +62,7 @@ export function RoutePlanner({
 
   // Handle Autocomplete Search
   const handleSearch = (query, target) => {
+    if (setActivePresetId) setActivePresetId(null);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
     if (target === 'start') setStartQuery(query);
@@ -92,6 +94,7 @@ export function RoutePlanner({
   };
 
   const selectSuggestion = (item, target) => {
+    if (setActivePresetId) setActivePresetId(null);
     if (target === 'start') {
       setStartPoint(item);
       setStartQuery(item.name);
@@ -110,6 +113,7 @@ export function RoutePlanner({
 
   // Add Waypoint
   const handleAddStop = () => {
+    if (setActivePresetId) setActivePresetId(null);
     if (waypoints.length >= 4) return;
     const newId = `wp-${Date.now()}`;
     const newWp = {
@@ -124,6 +128,7 @@ export function RoutePlanner({
 
   // Remove Waypoint
   const handleRemoveStop = (id) => {
+    if (setActivePresetId) setActivePresetId(null);
     setWaypoints(waypoints.filter(wp => wp.id !== id));
     setWaypointQueries(prev => {
       const copy = { ...prev };
@@ -135,6 +140,7 @@ export function RoutePlanner({
   // Swap Start & Destination
   const handleSwap = () => {
     if (!startPoint || !destination) return;
+    if (setActivePresetId) setActivePresetId(null);
     const tempPoint = { ...startPoint };
     const tempQuery = startQuery;
     setStartPoint(destination);
@@ -145,6 +151,7 @@ export function RoutePlanner({
 
   // GPS Locate
   const handleUseCurrentLocation = () => {
+    if (setActivePresetId) setActivePresetId(null);
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
       return;

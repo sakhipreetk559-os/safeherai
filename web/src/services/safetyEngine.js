@@ -459,7 +459,9 @@ function calculateBBox(coords) {
 
 function minDistanceToPolyline(lat, lng, coords) {
   let min = Infinity;
-  for (const [pLat, pLng] of coords) {
+  const step = coords.length > 400 ? Math.ceil(coords.length / 400) : 1;
+  for (let i = 0; i < coords.length; i += step) {
+    const [pLat, pLng] = coords[i];
     const d = haversineKm(lat, lng, pLat, pLng);
     if (d < min) min = d;
   }

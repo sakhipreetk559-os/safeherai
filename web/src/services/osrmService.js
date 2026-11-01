@@ -14,14 +14,10 @@ export async function getRoutes(points, presetId = null) {
     throw new Error('At least Start and Destination points are required.');
   }
 
-  // 1. Identify if this matches a demo preset
+  // 1. Identify if this matches a demo preset (strictly when presetId is passed)
   const matchedPreset = presetId 
     ? CITY_PRESETS.find(p => p.id === presetId)
-    : CITY_PRESETS.find(p => {
-        const dStart = Math.hypot(p.start.lat - points[0].lat, p.start.lng - points[0].lng);
-        const dEnd = Math.hypot(p.destination.lat - points[points.length - 1].lat, p.destination.lng - points[points.length - 1].lng);
-        return dStart < 0.05 && dEnd < 0.05;
-      });
+    : null;
 
   // 2. Format coords as lon,lat;lon,lat;...
   const coordString = points.map(p => `${p.lng.toFixed(6)},${p.lat.toFixed(6)}`).join(';');
@@ -31,7 +27,7 @@ export async function getRoutes(points, presetId = null) {
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const timeoutId = setTimeout(() => controller.abort(), 6500);
 
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -39,11 +35,7 @@ export async function getRoutes(points, presetId = null) {
     if (res.ok) {
       const data = await res.json();
       if (data.code === 'Ok' && Array.isArray(data.routes) && data.routes.length > 0) {
-        // Validate distance matches local city commute (not thousands of km across India)
-        const totalDistKm = data.routes[0].distance / 1000;
-        if (totalDistKm < 150) {
-          osrmRoutes = data.routes;
-        }
+        osrmRoutes = data.routes;
       }
     }
   } catch (err) {
