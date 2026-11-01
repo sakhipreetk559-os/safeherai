@@ -1,0 +1,23 @@
+{
+  "name": "safeher-ai-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SafeHer AI - Real-time women's safety & intelligent navigation system",
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "preview": "npm --prefix web run preview",
+    "start": "npm --prefix web run preview"
+  },
+  "keywords": [
+    "womens-safety",
+    "navigation",
+    "leaflet",
+    "react",
+    "geospatial",
+    "osm",
+    "vite"
+  ],
+  "author": "sakhipreetk559-os",
+  "license": "MIT"
+}

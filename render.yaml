@@ -1,0 +1,27 @@
+services:
+  # 1. FastAPI Analytical & Predictive Backend Web Service
+  - type: web
+    name: safeher-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PORT
+        value: 8000
+
+  # 2. Vite + React Frontend Static Site
+  - type: web
+    name: safeher-web
+    runtime: static
+    region: oregon
+    plan: free
+    buildCommand: cd web && npm install && npm run build
+    staticPublishPath: ./web/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
