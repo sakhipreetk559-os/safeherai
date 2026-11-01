@@ -24,8 +24,8 @@ export function EmergencyHubModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col z-[100000]">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-slate-800 bg-gradient-to-r from-pink-950/40 via-purple-950/30 to-slate-900 flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -48,12 +48,12 @@ export function EmergencyHubModal({ isOpen, onClose }) {
         {/* Modal Scrollable Content */}
         <div className="p-6 overflow-y-auto space-y-5">
           {/* Top SOS banner */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-red-950/40 via-red-900/30 to-slate-900 border border-red-500/30 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-red-950/50 via-rose-900/30 to-slate-900 border border-red-500/30 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <AlertOctagon className="w-6 h-6 text-red-400 flex-shrink-0 animate-pulse" />
               <div>
-                <h4 className="font-extrabold text-sm text-red-200">Immediate Life Danger?</h4>
-                <p className="text-xs text-red-300/80">Call 112 or 1091 directly for urgent police dispatch.</p>
+                <h4 className="font-extrabold text-sm text-red-200">Immediate Life Threat or Harassment?</h4>
+                <p className="text-xs text-red-300/80">Call 112 or 1091 directly for high-priority dispatch.</p>
               </div>
             </div>
             <a

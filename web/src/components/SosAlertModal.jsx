@@ -75,8 +75,8 @@ export function SosAlertModal({ isOpen, onClose, currentCoords, currentAddress }
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-red-950/90 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-slate-900 border-2 border-red-500 rounded-3xl shadow-2xl overflow-hidden p-6 text-center space-y-6">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-red-950/90 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-slate-900 border-2 border-red-500 rounded-3xl shadow-2xl overflow-hidden p-6 text-center space-y-6 z-[100000]">
         {/* Pulsing Siren Icon Header */}
         <div className="relative flex items-center justify-center mx-auto w-24 h-24">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>

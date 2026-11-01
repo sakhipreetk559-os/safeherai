@@ -17,20 +17,20 @@ export function ShareTripModal({ isOpen, onClose, startPoint, destination, activ
   if (!isOpen) return null;
 
   const tripId = `TR-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-  const originStr = startPoint?.name || 'Origin';
-  const destStr = destination?.name || 'Destination';
+  const originStr = startPoint?.name || 'Origin Point';
+  const destStr = destination?.name || 'Destination Point';
   const etaMins = activeRoute?.durationMin || 24;
-  const score = safetyScore || 92;
+  const score = safetyScore || 94;
 
   // Live tracking URL
   const trackingUrl = `https://safeher.ai/track/${tripId}?lat=${startPoint?.lat || 28.6315}&lng=${startPoint?.lng || 77.2167}`;
 
-  const messageText = `🛡️ I am sharing my live trip via SafeHer AI:
-From: ${originStr}
-To: ${destStr}
-Estimated Time: ${etaMins} mins
-SafeHer Safety Score: ${score}% (${score >= 85 ? 'Shielded Safe Corridor' : 'Moderate Precautions'})
-Track my live journey here: ${trackingUrl}`;
+  const messageText = `🛡️ SafeHer AI Live Journey Tracking:
+Origin: ${originStr}
+Destination: ${destStr}
+ETA: ${etaMins} mins
+SafeHer Safety Score: ${score}% (${score >= 85 ? 'Level 1: Shielded Corridor' : 'Standard Precautions'})
+Track my live location & route: ${trackingUrl}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(messageText);
@@ -41,10 +41,10 @@ Track my live journey here: ${trackingUrl}`;
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col z-[100000]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/40 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-800 bg-slate-800/60 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="p-2 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-500/20">
               <Share2 className="w-5 h-5" />
@@ -68,7 +68,7 @@ Track my live journey here: ${trackingUrl}`;
           <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/80 space-y-2.5 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Active Corridor ID: {tripId}
+                Corridor Token: {tripId}
               </span>
               <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[10px]">
                 {score}% Safe
@@ -77,12 +77,12 @@ Track my live journey here: ${trackingUrl}`;
 
             <div className="space-y-1 text-slate-200">
               <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                <span className="truncate">{originStr}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                <span className="truncate font-medium">{originStr}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></span>
-                <span className="truncate">{destStr}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 flex-shrink-0"></span>
+                <span className="truncate font-medium">{destStr}</span>
               </div>
             </div>
 
@@ -92,7 +92,7 @@ Track my live journey here: ${trackingUrl}`;
                 <strong className="text-white">ETA {etaMins} mins</strong>
               </span>
               <span>•</span>
-              <span>Real-time Sentinel Guard</span>
+              <span className="text-emerald-400 font-semibold">Active Sentinel Protected</span>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ Track my live journey here: ${trackingUrl}`;
               className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/30"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>Share on WhatsApp</span>
+              <span>Share Live Route on WhatsApp</span>
             </a>
 
             <button
@@ -118,7 +118,7 @@ Track my live journey here: ${trackingUrl}`;
           </div>
 
           <p className="text-[11px] text-slate-400 text-center leading-relaxed">
-            Your live GPS location and ETA will update automatically on your recipient's browser.
+            Your trusted contact will see your real-time path, distance, and nearest safe haven contacts.
           </p>
         </div>
       </div>

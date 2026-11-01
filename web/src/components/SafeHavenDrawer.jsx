@@ -24,14 +24,14 @@ export function SafeHavenDrawer({ isOpen, onClose, haven, onNavigate }) {
     : 'bg-purple-500/20 text-purple-300 border-purple-500/40';
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 p-4 max-w-lg mx-auto animate-in slide-in-from-bottom duration-300">
-      <div className="bg-slate-900 border-2 border-cyan-500/80 rounded-3xl shadow-2xl p-5 space-y-4 backdrop-blur-xl">
+    <div className="fixed inset-x-0 bottom-4 z-[9990] p-4 max-w-lg mx-auto animate-in slide-in-from-bottom duration-300 pointer-events-auto">
+      <div className="bg-slate-900/95 border-2 border-cyan-500/90 rounded-3xl shadow-2xl p-5 space-y-4 backdrop-blur-2xl">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="flex h-2.5 w-2.5 rounded-full bg-cyan-400 animate-ping"></span>
             <span className="text-xs font-black uppercase tracking-wider text-cyan-400">
-              Immediate Safe Haven Identified
+              Immediate Safe Haven Guidance
             </span>
           </div>
           <button

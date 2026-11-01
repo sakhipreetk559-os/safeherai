@@ -13,9 +13,9 @@ import { analyzeRouteSafety, findNearestSafeHaven } from './services/safetyEngin
 import { CITY_PRESETS } from './data/presets';
 
 export default function App() {
-  // Initial default scenario (Delhi NCR Night Commute)
   const defaultPreset = CITY_PRESETS[0];
 
+  const [activePresetId, setActivePresetId] = useState(defaultPreset.id);
   const [startPoint, setStartPoint] = useState(defaultPreset.start);
   const [waypoints, setWaypoints] = useState(defaultPreset.waypoints);
   const [destination, setDestination] = useState(defaultPreset.destination);
@@ -26,7 +26,7 @@ export default function App() {
   const [activePois, setActivePois] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Safety filter toggles
+  // Filters
   const [filters, setFilters] = useState({
     avoidLiquor: true,
     prioritizePoliceHospital: true,
@@ -36,79 +36,88 @@ export default function App() {
 
   const [isNightMode, setIsNightMode] = useState(true);
 
-  // Modals & Panels
+  // Modals
   const [isSosOpen, setIsSosOpen] = useState(false);
   const [isHelplineOpen, setIsHelplineOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isSafeHavenOpen, setIsSafeHavenOpen] = useState(false);
   const [nearestHaven, setNearestHaven] = useState(null);
 
-  // Calculate & Analyze Routes
-  const handleCalculateRoutes = useCallback(async () => {
-    if (!startPoint || !destination) return;
+  // Core route calculation executor
+  const executeRouteCalculation = useCallback(async (points, dest, presetId = null) => {
+    if (!points || points.length < 2 || !dest) return;
 
     setIsLoading(true);
     try {
-      // 1. Gather all ordered points [start, ...waypoints, destination]
-      const validPoints = [startPoint, ...waypoints.filter(w => w.lat && w.lng), destination];
-      
-      // 2. Fetch or interpolate routes
-      const fetchedRoutes = await getRoutes(validPoints);
+      // 1. Fetch OSRM or street-level preset geometry
+      const fetchedRoutes = await getRoutes(points, presetId);
       setRoutes(fetchedRoutes);
 
-      // 3. Run safety engine for each route option
+      // 2. Perform safety risk matrix analysis on all route options
       const analysisMap = {};
       for (const r of fetchedRoutes) {
-        const analysis = await analyzeRouteSafety(r, destination, filters, isNightMode);
+        const analysis = await analyzeRouteSafety(r, dest, filters, isNightMode);
         analysisMap[r.id] = analysis;
       }
       setSafetyAnalysis(analysisMap);
 
-      // 4. Select best route based on user filters
-      let defaultSelected = 'safest';
-      if (filters.avoidLiquor && analysisMap['safest']) {
-        defaultSelected = 'safest';
-      }
-      setActiveRouteId(defaultSelected);
+      // 3. Set default active route
+      let selected = 'safest';
+      setActiveRouteId(selected);
 
-      // 5. Set active corridor POIs
-      const activeAnalysis = analysisMap[defaultSelected];
-      if (activeAnalysis) {
-        setActivePois(activeAnalysis.allCorridorPois || []);
-        // Determine nearest haven from start position
-        const haven = findNearestSafeHaven(startPoint.lat, startPoint.lng, activeAnalysis.allCorridorPois);
+      // 4. Update corridor POIs & Nearest Safe Haven
+      const activeData = analysisMap[selected];
+      if (activeData) {
+        setActivePois(activeData.allCorridorPois || []);
+        const haven = findNearestSafeHaven(points[0].lat, points[0].lng, activeData.allCorridorPois);
         setNearestHaven(haven);
       }
     } catch (err) {
-      console.error('Error generating routes:', err);
+      console.error('Route calculation error:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [startPoint, waypoints, destination, filters, isNightMode]);
+  }, [filters, isNightMode]);
 
-  // Initial mount route calculation
+  // Initial load
   useEffect(() => {
-    handleCalculateRoutes();
+    const initialPoints = [defaultPreset.start, ...(defaultPreset.waypoints || []), defaultPreset.destination];
+    executeRouteCalculation(initialPoints, defaultPreset.destination, defaultPreset.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // When active route changes, update corridor POIs
+  // When active route is switched by user
   useEffect(() => {
     if (safetyAnalysis[activeRouteId]) {
       const activeData = safetyAnalysis[activeRouteId];
       setActivePois(activeData.allCorridorPois || []);
-      const haven = findNearestSafeHaven(startPoint?.lat || 28.6315, startPoint?.lng || 77.2167, activeData.allCorridorPois);
+      const haven = findNearestSafeHaven(startPoint?.lat, startPoint?.lng, activeData.allCorridorPois);
       setNearestHaven(haven);
     }
   }, [activeRouteId, safetyAnalysis, startPoint]);
 
-  // Toggle filter with immediate recalculation
+  // When a preset is selected
+  const handleSelectPreset = async (preset) => {
+    setActivePresetId(preset.id);
+    setStartPoint(preset.start);
+    setWaypoints(preset.waypoints || []);
+    setDestination(preset.destination);
+
+    const points = [preset.start, ...(preset.waypoints || []), preset.destination];
+    await executeRouteCalculation(points, preset.destination, preset.id);
+  };
+
+  // Manual Trigger
+  const handleManualCalculate = () => {
+    const validPoints = [startPoint, ...waypoints.filter(w => w.lat && w.lng), destination];
+    executeRouteCalculation(validPoints, destination, activePresetId);
+  };
+
+  // Toggle filter
   const handleToggleFilter = (key) => {
     setFilters(prev => {
       const updated = { ...prev, [key]: !prev[key] };
-      // Recalculate analysis with updated filter
       if (routes.length > 0) {
-        const updatedAnalysis = {};
         for (const r of routes) {
           analyzeRouteSafety(r, destination, updated, isNightMode).then(res => {
             setSafetyAnalysis(old => ({ ...old, [r.id]: res }));
@@ -119,7 +128,6 @@ export default function App() {
     });
   };
 
-  // Open nearest haven
   const handleOpenNearestHaven = () => {
     if (!nearestHaven && activePois.length > 0) {
       const haven = findNearestSafeHaven(startPoint?.lat || 28.6315, startPoint?.lng || 77.2167, activePois);
@@ -132,7 +140,7 @@ export default function App() {
   const activeAnalysis = safetyAnalysis[activeRouteId];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#070a12] text-slate-100 flex flex-col font-sans selection:bg-pink-500 selection:text-white">
       {/* Top Navigation & Status Bar */}
       <Navbar
         onOpenSos={() => setIsSosOpen(true)}
@@ -147,8 +155,8 @@ export default function App() {
       {/* Main Workspace Layout */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Route Planner & Safety Controls (5 Cols on Desktop) */}
-        <div className="lg:col-span-5 space-y-4 flex flex-col">
-          {/* Route Planner Box */}
+        <div className="lg:col-span-5 space-y-4 flex flex-col z-10">
+          {/* Multi-Stop Route Planner */}
           <RoutePlanner
             startPoint={startPoint}
             setStartPoint={setStartPoint}
@@ -156,12 +164,14 @@ export default function App() {
             setWaypoints={setWaypoints}
             destination={destination}
             setDestination={setDestination}
-            onCalculateRoutes={handleCalculateRoutes}
+            onCalculateRoutes={handleManualCalculate}
+            onSelectPreset={handleSelectPreset}
             isLoading={isLoading}
             routes={routes}
             activeRouteId={activeRouteId}
             setActiveRouteId={setActiveRouteId}
             safetyAnalysis={safetyAnalysis}
+            activePresetId={activePresetId}
           />
 
           {/* Smart Safety Filters */}
@@ -179,7 +189,7 @@ export default function App() {
         </div>
 
         {/* Right Column: Full Interactive Leaflet Map (7 Cols on Desktop) */}
-        <div className="lg:col-span-7 flex flex-col min-h-[500px] lg:min-h-[750px] relative">
+        <div className="lg:col-span-7 flex flex-col min-h-[500px] lg:min-h-[750px] relative z-0">
           <MapView
             startPoint={startPoint}
             waypoints={waypoints}
@@ -194,7 +204,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* Modals & Emergency Overlays */}
+      {/* Modals & Overlays (Isolated in Portal/Top Layer at z-[99999]) */}
       <EmergencyHubModal
         isOpen={isHelplineOpen}
         onClose={() => setIsHelplineOpen(false)}

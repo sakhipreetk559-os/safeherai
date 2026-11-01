@@ -13,7 +13,9 @@ import {
   Route as RouteIcon,
   ChevronDown,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Building2,
+  Check
 } from 'lucide-react';
 import { searchLocations, reverseGeocode } from '../services/nominatimService';
 import { CITY_PRESETS } from '../data/presets';
@@ -26,11 +28,13 @@ export function RoutePlanner({
   destination,
   setDestination,
   onCalculateRoutes,
+  onSelectPreset,
   isLoading,
   routes,
   activeRouteId,
   setActiveRouteId,
-  safetyAnalysis
+  safetyAnalysis,
+  activePresetId
 }) {
   const [startQuery, setStartQuery] = useState(startPoint?.name || '');
   const [destQuery, setDestQuery] = useState(destination?.name || '');
@@ -40,12 +44,12 @@ export function RoutePlanner({
   const [destSuggestions, setDestSuggestions] = useState([]);
   const [waypointSuggestions, setWaypointSuggestions] = useState({});
 
-  const [activeDropdown, setActiveDropdown] = useState(null); // 'start', 'dest', or waypoint id
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLocating, setIsLocating] = useState(false);
 
   const searchTimeoutRef = useRef(null);
 
-  // Sync state if props change (e.g. via preset)
+  // Sync state if props change
   useEffect(() => {
     if (startPoint?.name) setStartQuery(startPoint.name);
   }, [startPoint]);
@@ -83,7 +87,7 @@ export function RoutePlanner({
         setWaypointSuggestions(prev => ({ ...prev, [target]: results }));
         setActiveDropdown(target);
       }
-    }, 300);
+    }, 280);
   };
 
   const selectSuggestion = (item, target) => {
@@ -127,7 +131,7 @@ export function RoutePlanner({
     });
   };
 
-  // Swap Start and Destination
+  // Swap Start & Destination
   const handleSwap = () => {
     if (!startPoint || !destination) return;
     const tempPoint = { ...startPoint };
@@ -138,7 +142,7 @@ export function RoutePlanner({
     setDestQuery(tempQuery);
   };
 
-  // Browser Geolocation
+  // GPS Locate
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
@@ -154,80 +158,102 @@ export function RoutePlanner({
         setIsLocating(false);
       },
       () => {
-        // Fallback demo point (Connaught Place, Delhi)
         const fallback = { name: 'Connaught Place, New Delhi', lat: 28.6315, lng: 77.2167 };
         setStartPoint(fallback);
         setStartQuery(fallback.name);
         setIsLocating(false);
       },
-      { timeout: 7000 }
+      { timeout: 6000 }
     );
   };
 
-  // Load Preset
-  const handleLoadPreset = (presetId) => {
+  // Select Preset Handler
+  const handlePresetSelect = (presetId) => {
     const preset = CITY_PRESETS.find(p => p.id === presetId);
     if (!preset) return;
 
-    setStartPoint(preset.start);
     setStartQuery(preset.start.name);
-
-    setWaypoints(preset.waypoints || []);
+    setDestQuery(preset.destination.name);
     const wpQueryMap = {};
     (preset.waypoints || []).forEach(wp => {
       wpQueryMap[wp.id] = wp.name;
     });
     setWaypointQueries(wpQueryMap);
 
-    setDestination(preset.destination);
-    setDestQuery(preset.destination.name);
+    if (onSelectPreset) {
+      onSelectPreset(preset);
+    }
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-4">
-      {/* Header & Preset Selector */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <RouteIcon className="w-4 h-4 text-pink-400" />
-          <h2 className="font-bold text-sm text-slate-100">Multi-Stop Route Planner</h2>
+    <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-4 shadow-2xl space-y-4">
+      {/* Header & City Corridor Presets */}
+      <div className="space-y-2.5 pb-3 border-b border-slate-800/80">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20">
+              <RouteIcon className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="font-extrabold text-sm text-white">Multi-Stop Route Sentinel</h2>
+              <p className="text-[11px] text-slate-400">Add waypoints & simulate real commute corridors</p>
+            </div>
+          </div>
+
+          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+            Waypoints: {waypoints.length}/4
+          </span>
         </div>
 
-        {/* Quick Select Preset Dropdown */}
-        <div className="relative">
-          <select
-            onChange={(e) => handleLoadPreset(e.target.value)}
-            defaultValue=""
-            className="bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-pink-400 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-pink-500 cursor-pointer"
-          >
-            <option value="" disabled>⚡ Demo City Presets</option>
-            {CITY_PRESETS.map(p => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+        {/* Demo Metro Preset Quick Bar */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 whitespace-nowrap pl-0.5">
+            Presets:
+          </span>
+          {CITY_PRESETS.map(p => {
+            const isSelected = activePresetId === p.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => handlePresetSelect(p.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center space-x-1 border ${
+                  isSelected
+                    ? 'bg-pink-500/20 border-pink-500/60 text-pink-300 shadow-sm'
+                    : 'bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700/60'
+                }`}
+              >
+                <span>{p.city}</span>
+                {isSelected && <Check className="w-3 h-3 text-pink-400 stroke-[3]" />}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Inputs Stack */}
-      <div className="space-y-2.5 relative">
+      {/* Inputs Stack with Stepper Connector Line */}
+      <div className="relative pl-6 space-y-2.5 before:content-[''] before:absolute before:left-2.5 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-emerald-500 before:via-cyan-500 before:to-rose-500 before:opacity-60">
         {/* Start Location Input */}
         <div className="relative">
-          <div className="flex items-center bg-slate-800/80 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-emerald-500 transition shadow-inner">
-            <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 mr-2.5"></span>
+          {/* Stepper Node A */}
+          <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-900 text-slate-950 text-[9px] font-black flex items-center justify-center shadow-lg shadow-emerald-500/40">
+            A
+          </div>
+
+          <div className="flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-emerald-500 transition shadow-inner">
             <input
               type="text"
               value={startQuery}
               onChange={(e) => handleSearch(e.target.value, 'start')}
               onFocus={() => startSuggestions.length > 0 && setActiveDropdown('start')}
-              placeholder="Enter Start Location (e.g. Connaught Place)..."
-              className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-400 focus:outline-none"
+              placeholder="Enter Origin Point..."
+              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
             />
-            {/* GPS Locate Button */}
+            {/* GPS Locate */}
             <button
               onClick={handleUseCurrentLocation}
               disabled={isLocating}
-              title="Use current GPS pin"
+              title="Use current GPS location"
               className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-emerald-400 transition"
             >
               {isLocating ? <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" /> : <Crosshair className="w-3.5 h-3.5" />}
@@ -254,29 +280,31 @@ export function RoutePlanner({
         {/* Dynamic Waypoints (Intermediate Stops) */}
         {waypoints.map((wp, index) => (
           <div key={wp.id} className="relative flex items-center space-x-1.5">
-            <div className="flex-1 flex items-center bg-slate-800/80 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-cyan-500 transition shadow-inner">
-              <span className="flex-shrink-0 w-4 h-4 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold flex items-center justify-center mr-2 border border-cyan-500/40">
-                {index + 1}
-              </span>
+            {/* Stepper Node # */}
+            <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-cyan-500 border-2 border-slate-900 text-slate-950 text-[9px] font-black flex items-center justify-center shadow-lg shadow-cyan-500/40">
+              {index + 1}
+            </div>
+
+            <div className="flex-1 flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-cyan-500 transition shadow-inner">
               <input
                 type="text"
                 value={waypointQueries[wp.id] || wp.name || ''}
                 onChange={(e) => handleSearch(e.target.value, wp.id)}
                 onFocus={() => waypointSuggestions[wp.id]?.length > 0 && setActiveDropdown(wp.id)}
                 placeholder={`Intermediate Stop #${index + 1}...`}
-                className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-400 focus:outline-none"
+                className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
               />
             </div>
 
             <button
               onClick={() => handleRemoveStop(wp.id)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-red-500/20 border border-slate-700 hover:border-red-500/40 text-slate-400 hover:text-red-400 transition"
+              className="p-2 rounded-xl bg-slate-800 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition"
               title="Remove Stop"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
 
-            {/* Autocomplete Dropdown: Waypoint */}
+            {/* Dropdown: Waypoint */}
             {activeDropdown === wp.id && waypointSuggestions[wp.id]?.length > 0 && (
               <div className="absolute left-0 right-10 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden divide-y divide-slate-700/60">
                 {waypointSuggestions[wp.id].map((item, idx) => (
@@ -296,27 +324,31 @@ export function RoutePlanner({
 
         {/* Destination Input */}
         <div className="relative">
-          <div className="flex items-center bg-slate-800/80 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-pink-500 transition shadow-inner">
-            <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-pink-500 ring-4 ring-pink-500/20 mr-2.5"></span>
+          {/* Stepper Node B */}
+          <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-rose-500 border-2 border-slate-900 text-white text-[9px] font-black flex items-center justify-center shadow-lg shadow-rose-500/40">
+            B
+          </div>
+
+          <div className="flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-rose-500 transition shadow-inner">
             <input
               type="text"
               value={destQuery}
               onChange={(e) => handleSearch(e.target.value, 'dest')}
               onFocus={() => destSuggestions.length > 0 && setActiveDropdown('dest')}
-              placeholder="Enter Final Destination (e.g. Cyber City)..."
-              className="w-full bg-transparent text-xs text-slate-100 placeholder-slate-400 focus:outline-none"
+              placeholder="Enter Final Destination..."
+              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
             />
             {/* Swap Button */}
             <button
               onClick={handleSwap}
-              title="Swap Start & Destination"
+              title="Swap Origin & Destination"
               className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-pink-400 transition"
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Autocomplete Dropdown: Dest */}
+          {/* Dropdown: Dest */}
           {activeDropdown === 'dest' && destSuggestions.length > 0 && (
             <div className="absolute left-0 right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden divide-y divide-slate-700/60">
               {destSuggestions.map((item, idx) => (
@@ -325,7 +357,7 @@ export function RoutePlanner({
                   onClick={() => selectSuggestion(item, 'dest')}
                   className="px-3 py-2 text-xs hover:bg-slate-700/80 cursor-pointer flex items-center space-x-2 text-slate-200"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-pink-400 flex-shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
                   <span className="truncate">{item.name}</span>
                 </div>
               ))}
@@ -334,83 +366,83 @@ export function RoutePlanner({
         </div>
       </div>
 
-      {/* Add Stop Button & Action Buttons */}
+      {/* Add Stop Button & Generate Routes Action */}
       <div className="flex items-center justify-between pt-1">
         <button
           onClick={handleAddStop}
           disabled={waypoints.length >= 4}
-          className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center space-x-1 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center space-x-1.5 py-1 px-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Add Stop ({waypoints.length}/4)</span>
+          <span>Add Intermediate Stop</span>
         </button>
 
         <button
           onClick={onCalculateRoutes}
           disabled={isLoading || !startPoint || !destination}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs flex items-center space-x-2 shadow-lg shadow-pink-600/25 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-extrabold text-xs flex items-center space-x-2 shadow-xl shadow-pink-600/30 transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <>
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              <span>Analyzing Corridors...</span>
+              <span>Analyzing Risk Matrix...</span>
             </>
           ) : (
             <>
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Generate Safe Routes</span>
+              <span>Generate Safe Corridors</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Generated Route Comparison Cards */}
+      {/* Generated Route Choice Cards */}
       {routes && routes.length > 0 && (
-        <div className="pt-2 border-t border-slate-800 space-y-2">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+        <div className="pt-3 border-t border-slate-800/80 space-y-2">
+          <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
             <span>Available Route Corridors</span>
-            <span className="text-pink-400">Click to Select</span>
+            <span className="text-pink-400 text-[10px]">Select to Navigate</span>
           </div>
 
           <div className="grid grid-cols-1 gap-2">
             {routes.map(r => {
               const isSelected = r.id === activeRouteId;
               const analysis = safetyAnalysis && safetyAnalysis[r.id];
-              const score = analysis ? analysis.safetyScore : (r.id === 'safest' ? 92 : r.id === 'populated' ? 84 : 58);
+              const score = analysis ? analysis.safetyScore : (r.id === 'safest' ? 94 : r.id === 'populated' ? 82 : 55);
 
               return (
                 <div
                   key={r.id}
                   onClick={() => setActiveRouteId(r.id)}
-                  className={`p-3 rounded-xl border cursor-pointer transition relative overflow-hidden ${
+                  className={`p-3 rounded-xl border cursor-pointer transition relative overflow-hidden select-none ${
                     isSelected
-                      ? 'bg-slate-800/90 border-pink-500/80 ring-1 ring-pink-500/40 shadow-lg'
+                      ? 'bg-slate-800/95 border-pink-500/80 ring-1 ring-pink-500/50 shadow-xl'
                       : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800/70'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-2">
                       <span
-                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        className="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white/20"
                         style={{ backgroundColor: r.color }}
                       />
-                      <h4 className="font-bold text-xs text-slate-100">{r.name}</h4>
+                      <h4 className="font-extrabold text-xs text-white">{r.name}</h4>
                       {r.isRecommended && (
-                        <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">
+                        <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">
                           Recommended
                         </span>
                       )}
                     </div>
 
                     {/* Safety Score Badge */}
-                    <div className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold flex items-center space-x-1 ${
+                    <div className={`px-2 py-0.5 rounded-full text-[11px] font-black flex items-center space-x-1 ${
                       score >= 85
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/40'
                         : score >= 68
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/40'
+                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/40'
                     }`}>
-                      <ShieldCheck className="w-3 h-3" />
+                      <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{score}% Safe</span>
                     </div>
                   </div>
@@ -427,8 +459,8 @@ export function RoutePlanner({
                     {analysis?.breakdown?.liquor && (
                       <>
                         <span>•</span>
-                        <span className={analysis.breakdown.liquor.count > 0 ? 'text-amber-400' : 'text-emerald-400'}>
-                          {analysis.breakdown.liquor.count} Bars Nearby
+                        <span className={analysis.breakdown.liquor.count > 0 ? 'text-amber-400 font-semibold' : 'text-emerald-400 font-semibold'}>
+                          {analysis.breakdown.liquor.count} Liquor Outlets
                         </span>
                       </>
                     )}
