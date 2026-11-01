@@ -12,6 +12,7 @@ import {
   Compass,
   CheckCircle2
 } from 'lucide-react';
+import { haversineKm } from '../services/osrmService.js';
 
 // Auto-Fit Map Bounds component
 function MapController({ bounds, center }) {
@@ -304,8 +305,8 @@ export function MapView({
           </>
         )}
 
-        {/* Emergency Nearest Safe Haven Direct Ray */}
-        {nearestSafeHaven && startPoint && (
+        {/* Emergency Nearest Safe Haven Direct Ray (strictly local corridor <= 5km) */}
+        {nearestSafeHaven && startPoint && haversineKm(startPoint.lat, startPoint.lng, nearestSafeHaven.lat, nearestSafeHaven.lng) <= 5.0 && (
           <Polyline
             positions={[
               [startPoint.lat, startPoint.lng],

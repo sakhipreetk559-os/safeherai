@@ -1,7 +1,7 @@
 // SafeHer AI — Hybrid Real + Resilient Fallback Safety Engine
 // Evaluates route corridors and destinations for Women's Safety
 
-import { haversineKm } from './osrmService';
+import { haversineKm } from './osrmService.js';
 
 const OVERPASS_ENDPOINTS = [
   'https://overpass-api.de/api/interpreter',

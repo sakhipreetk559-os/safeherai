@@ -1,6 +1,6 @@
 // Open Source Routing Machine (OSRM) Multi-Stop Service with Resilient Street-Level Engine
 
-import { CITY_PRESETS, generateSmoothRoadPath } from '../data/presets';
+import { CITY_PRESETS, generateSmoothRoadPath } from '../data/presets.js';
 
 const OSRM_BASE = 'https://router.project-osrm.org';
 
