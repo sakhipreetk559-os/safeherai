@@ -15,7 +15,8 @@ import {
   Loader2,
   AlertCircle,
   Building2,
-  Check
+  Check,
+  Compass
 } from 'lucide-react';
 import { searchLocations, reverseGeocode } from '../services/nominatimService';
 import { CITY_PRESETS } from '../data/presets';
@@ -167,7 +168,7 @@ export function RoutePlanner({
     );
   };
 
-  // Select Preset Handler
+  // Preset Selection Handler
   const handlePresetSelect = (presetId) => {
     const preset = CITY_PRESETS.find(p => p.id === presetId);
     if (!preset) return;
@@ -186,28 +187,28 @@ export function RoutePlanner({
   };
 
   return (
-    <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-4 shadow-2xl space-y-4">
-      {/* Header & City Corridor Presets */}
-      <div className="space-y-2.5 pb-3 border-b border-slate-800/80">
+    <div className="glass-panel rounded-3xl p-5 shadow-glass space-y-4">
+      {/* Header & City Presets */}
+      <div className="space-y-3 pb-3 border-b border-white/[0.08]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20">
-              <RouteIcon className="w-4 h-4" />
+          <div className="flex items-center space-x-2.5">
+            <div className="p-2 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-violet-500/20 text-cyan-300 border border-cyan-500/30">
+              <Compass className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-extrabold text-sm text-white">Multi-Stop Route Sentinel</h2>
-              <p className="text-[11px] text-slate-400">Add waypoints & simulate real commute corridors</p>
+              <h2 className="font-extrabold text-sm text-white tracking-wide">Multi-Stop Route Sentinel</h2>
+              <p className="text-[11px] text-slate-400">Add waypoints & analyze real-time corridors</p>
             </div>
           </div>
 
-          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-            Waypoints: {waypoints.length}/4
+          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-obsidian-800 text-slate-300 border border-white/10">
+            {waypoints.length}/4 STOPS
           </span>
         </div>
 
-        {/* Demo Metro Preset Quick Bar */}
-        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 whitespace-nowrap pl-0.5">
+        {/* Metro Presets Segmented Bar */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 whitespace-nowrap pl-1">
             Presets:
           </span>
           {CITY_PRESETS.map(p => {
@@ -217,44 +218,43 @@ export function RoutePlanner({
                 key={p.id}
                 type="button"
                 onClick={() => handlePresetSelect(p.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center space-x-1 border ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-1.5 border ${
                   isSelected
-                    ? 'bg-pink-500/20 border-pink-500/60 text-pink-300 shadow-sm'
-                    : 'bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700/60'
+                    ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border-cyan-400/50 text-cyan-200 shadow-glow-cyan'
+                    : 'bg-obsidian-900/60 hover:bg-obsidian-800 text-slate-400 hover:text-white border-white/[0.06]'
                 }`}
               >
                 <span>{p.city}</span>
-                {isSelected && <Check className="w-3 h-3 text-pink-400 stroke-[3]" />}
+                {isSelected && <Check className="w-3 h-3 text-cyan-400 stroke-[3]" />}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Inputs Stack with Stepper Connector Line */}
-      <div className="relative pl-6 space-y-2.5 before:content-[''] before:absolute before:left-2.5 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-emerald-500 before:via-cyan-500 before:to-rose-500 before:opacity-60">
-        {/* Start Location Input */}
+      {/* Stepper Input Fields with Glowing Rail */}
+      <div className="relative pl-7 space-y-3 before:content-[''] before:absolute before:left-3 before:top-4 before:bottom-4 before:w-[2px] before:bg-gradient-to-b before:from-emerald-400 before:via-cyan-400 before:to-rose-400 before:opacity-75">
+        {/* Origin Input (Node A) */}
         <div className="relative">
-          {/* Stepper Node A */}
-          <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-900 text-slate-950 text-[9px] font-black flex items-center justify-center shadow-lg shadow-emerald-500/40">
+          <div className="absolute -left-7 top-2.5 w-5 h-5 rounded-full bg-emerald-500 border-2 border-obsidian-950 text-obsidian-950 text-[10px] font-black flex items-center justify-center shadow-glow-emerald">
             A
           </div>
 
-          <div className="flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-emerald-500 transition shadow-inner">
+          <div className="flex items-center bg-obsidian-900/80 hover:bg-obsidian-800/90 border border-white/[0.08] rounded-xl px-3.5 py-2.5 focus-within:border-emerald-400/80 focus-within:ring-1 focus-within:ring-emerald-400/30 transition-all shadow-inner">
             <input
               type="text"
               value={startQuery}
               onChange={(e) => handleSearch(e.target.value, 'start')}
               onFocus={() => startSuggestions.length > 0 && setActiveDropdown('start')}
               placeholder="Enter Origin Point..."
-              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none font-medium"
             />
             {/* GPS Locate */}
             <button
               onClick={handleUseCurrentLocation}
               disabled={isLocating}
               title="Use current GPS location"
-              className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-emerald-400 transition"
+              className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-emerald-400 transition"
             >
               {isLocating ? <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" /> : <Crosshair className="w-3.5 h-3.5" />}
             </button>
@@ -262,12 +262,12 @@ export function RoutePlanner({
 
           {/* Autocomplete Dropdown: Start */}
           {activeDropdown === 'start' && startSuggestions.length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden divide-y divide-slate-700/60">
+            <div className="absolute left-0 right-0 top-full mt-1.5 bg-obsidian-800 border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden divide-y divide-white/[0.06] backdrop-blur-xl">
               {startSuggestions.map((item, idx) => (
                 <div
                   key={idx}
                   onClick={() => selectSuggestion(item, 'start')}
-                  className="px-3 py-2 text-xs hover:bg-slate-700/80 cursor-pointer flex items-center space-x-2 text-slate-200"
+                  className="px-3.5 py-2.5 text-xs hover:bg-white/[0.06] cursor-pointer flex items-center space-x-2.5 text-slate-200 transition"
                 >
                   <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
                   <span className="truncate">{item.name}</span>
@@ -277,28 +277,27 @@ export function RoutePlanner({
           )}
         </div>
 
-        {/* Dynamic Waypoints (Intermediate Stops) */}
+        {/* Dynamic Intermediate Waypoints */}
         {waypoints.map((wp, index) => (
-          <div key={wp.id} className="relative flex items-center space-x-1.5">
-            {/* Stepper Node # */}
-            <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-cyan-500 border-2 border-slate-900 text-slate-950 text-[9px] font-black flex items-center justify-center shadow-lg shadow-cyan-500/40">
+          <div key={wp.id} className="relative flex items-center space-x-2">
+            <div className="absolute -left-7 top-2.5 w-5 h-5 rounded-full bg-cyan-500 border-2 border-obsidian-950 text-obsidian-950 text-[10px] font-black flex items-center justify-center shadow-glow-cyan">
               {index + 1}
             </div>
 
-            <div className="flex-1 flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-cyan-500 transition shadow-inner">
+            <div className="flex-1 flex items-center bg-obsidian-900/80 hover:bg-obsidian-800/90 border border-white/[0.08] rounded-xl px-3.5 py-2.5 focus-within:border-cyan-400/80 focus-within:ring-1 focus-within:ring-cyan-400/30 transition-all shadow-inner">
               <input
                 type="text"
                 value={waypointQueries[wp.id] || wp.name || ''}
                 onChange={(e) => handleSearch(e.target.value, wp.id)}
                 onFocus={() => waypointSuggestions[wp.id]?.length > 0 && setActiveDropdown(wp.id)}
                 placeholder={`Intermediate Stop #${index + 1}...`}
-                className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+                className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none font-medium"
               />
             </div>
 
             <button
               onClick={() => handleRemoveStop(wp.id)}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition"
+              className="p-2.5 rounded-xl bg-obsidian-900 hover:bg-rose-500/20 border border-white/[0.08] hover:border-rose-500/50 text-slate-400 hover:text-rose-400 transition"
               title="Remove Stop"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -306,12 +305,12 @@ export function RoutePlanner({
 
             {/* Dropdown: Waypoint */}
             {activeDropdown === wp.id && waypointSuggestions[wp.id]?.length > 0 && (
-              <div className="absolute left-0 right-10 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden divide-y divide-slate-700/60">
+              <div className="absolute left-0 right-10 top-full mt-1.5 bg-obsidian-800 border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden divide-y divide-white/[0.06] backdrop-blur-xl">
                 {waypointSuggestions[wp.id].map((item, idx) => (
                   <div
                     key={idx}
                     onClick={() => selectSuggestion(item, wp.id)}
-                    className="px-3 py-2 text-xs hover:bg-slate-700/80 cursor-pointer flex items-center space-x-2 text-slate-200"
+                    className="px-3.5 py-2.5 text-xs hover:bg-white/[0.06] cursor-pointer flex items-center space-x-2.5 text-slate-200 transition"
                   >
                     <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
                     <span className="truncate">{item.name}</span>
@@ -322,27 +321,26 @@ export function RoutePlanner({
           </div>
         ))}
 
-        {/* Destination Input */}
+        {/* Destination Input (Node B) */}
         <div className="relative">
-          {/* Stepper Node B */}
-          <div className="absolute -left-6 top-2.5 w-4 h-4 rounded-full bg-rose-500 border-2 border-slate-900 text-white text-[9px] font-black flex items-center justify-center shadow-lg shadow-rose-500/40">
+          <div className="absolute -left-7 top-2.5 w-5 h-5 rounded-full bg-rose-500 border-2 border-obsidian-950 text-white text-[10px] font-black flex items-center justify-center shadow-glow-rose">
             B
           </div>
 
-          <div className="flex items-center bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl px-3 py-2 focus-within:border-rose-500 transition shadow-inner">
+          <div className="flex items-center bg-obsidian-900/80 hover:bg-obsidian-800/90 border border-white/[0.08] rounded-xl px-3.5 py-2.5 focus-within:border-rose-400/80 focus-within:ring-1 focus-within:ring-rose-400/30 transition-all shadow-inner">
             <input
               type="text"
               value={destQuery}
               onChange={(e) => handleSearch(e.target.value, 'dest')}
               onFocus={() => destSuggestions.length > 0 && setActiveDropdown('dest')}
-              placeholder="Enter Final Destination..."
-              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+              placeholder="Enter Destination Point..."
+              className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none font-medium"
             />
             {/* Swap Button */}
             <button
               onClick={handleSwap}
               title="Swap Origin & Destination"
-              className="p-1 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-pink-400 transition"
+              className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-cyan-400 transition"
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
             </button>
@@ -350,12 +348,12 @@ export function RoutePlanner({
 
           {/* Dropdown: Dest */}
           {activeDropdown === 'dest' && destSuggestions.length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden divide-y divide-slate-700/60">
+            <div className="absolute left-0 right-0 top-full mt-1.5 bg-obsidian-800 border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden divide-y divide-white/[0.06] backdrop-blur-xl">
               {destSuggestions.map((item, idx) => (
                 <div
                   key={idx}
                   onClick={() => selectSuggestion(item, 'dest')}
-                  className="px-3 py-2 text-xs hover:bg-slate-700/80 cursor-pointer flex items-center space-x-2 text-slate-200"
+                  className="px-3.5 py-2.5 text-xs hover:bg-white/[0.06] cursor-pointer flex items-center space-x-2.5 text-slate-200 transition"
                 >
                   <MapPin className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
                   <span className="truncate">{item.name}</span>
@@ -366,21 +364,21 @@ export function RoutePlanner({
         </div>
       </div>
 
-      {/* Add Stop Button & Generate Routes Action */}
-      <div className="flex items-center justify-between pt-1">
+      {/* Action Buttons: Add Stop & Analyze Corridors */}
+      <div className="flex items-center justify-between pt-2">
         <button
           onClick={handleAddStop}
           disabled={waypoints.length >= 4}
-          className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center space-x-1.5 py-1 px-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="text-xs font-bold text-cyan-300 hover:text-cyan-200 flex items-center space-x-1.5 py-1.5 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 disabled:opacity-30 disabled:cursor-not-allowed transition"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Add Intermediate Stop</span>
+          <span>Add Stop</span>
         </button>
 
         <button
           onClick={onCalculateRoutes}
           disabled={isLoading || !startPoint || !destination}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-extrabold text-xs flex items-center space-x-2 shadow-xl shadow-pink-600/30 transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white font-black text-xs flex items-center space-x-2 shadow-glow-cyan transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <>
@@ -398,26 +396,26 @@ export function RoutePlanner({
 
       {/* Generated Route Choice Cards */}
       {routes && routes.length > 0 && (
-        <div className="pt-3 border-t border-slate-800/80 space-y-2">
-          <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-            <span>Available Route Corridors</span>
-            <span className="text-pink-400 text-[10px]">Select to Navigate</span>
+        <div className="pt-3 border-t border-white/[0.08] space-y-2.5">
+          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-between">
+            <span>AVAILABLE CORRIDORS</span>
+            <span className="text-cyan-400 font-bold">CLICK TO SWITCH</span>
           </div>
 
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2.5">
             {routes.map(r => {
               const isSelected = r.id === activeRouteId;
               const analysis = safetyAnalysis && safetyAnalysis[r.id];
-              const score = analysis ? analysis.safetyScore : (r.id === 'safest' ? 94 : r.id === 'populated' ? 82 : 55);
+              const score = analysis ? analysis.safetyScore : (r.id === 'safest' ? 95 : r.id === 'populated' ? 82 : 55);
 
               return (
                 <div
                   key={r.id}
                   onClick={() => setActiveRouteId(r.id)}
-                  className={`p-3 rounded-xl border cursor-pointer transition relative overflow-hidden select-none ${
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all select-none relative overflow-hidden ${
                     isSelected
-                      ? 'bg-slate-800/95 border-pink-500/80 ring-1 ring-pink-500/50 shadow-xl'
-                      : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800/70'
+                      ? 'bg-obsidian-800/90 border-cyan-400/80 shadow-glow-cyan ring-1 ring-cyan-400/40'
+                      : 'bg-obsidian-900/50 border-white/[0.06] hover:border-white/20 hover:bg-obsidian-800/60'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -428,31 +426,31 @@ export function RoutePlanner({
                       />
                       <h4 className="font-extrabold text-xs text-white">{r.name}</h4>
                       {r.isRecommended && (
-                        <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">
-                          Recommended
+                        <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-full border border-emerald-500/40">
+                          RECOMMENDED
                         </span>
                       )}
                     </div>
 
-                    {/* Safety Score Badge */}
-                    <div className={`px-2 py-0.5 rounded-full text-[11px] font-black flex items-center space-x-1 ${
+                    {/* Safety Badge */}
+                    <div className={`px-2.5 py-0.5 rounded-full text-[11px] font-black flex items-center space-x-1 ${
                       score >= 85
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/40'
+                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40'
                         : score >= 68
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/40'
-                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/40'
+                        ? 'bg-amber-500/15 text-amber-300 border border-amber-500/40'
+                        : 'bg-rose-500/15 text-rose-300 border border-rose-500/40'
                     }`}>
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{score}% Safe</span>
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{r.tagline}</p>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-1">{r.tagline}</p>
 
                   <div className="flex items-center space-x-3 text-[11px] text-slate-300 mt-2 font-medium">
                     <span className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3 text-slate-400" />
-                      <strong className="text-white">{r.durationMin} mins</strong>
+                      <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                      <strong className="text-white font-bold">{r.durationMin} mins</strong>
                     </span>
                     <span>•</span>
                     <span>{r.distanceKm} km</span>
@@ -460,7 +458,7 @@ export function RoutePlanner({
                       <>
                         <span>•</span>
                         <span className={analysis.breakdown.liquor.count > 0 ? 'text-amber-400 font-semibold' : 'text-emerald-400 font-semibold'}>
-                          {analysis.breakdown.liquor.count} Liquor Outlets
+                          {analysis.breakdown.liquor.count} Bars / Liquor
                         </span>
                       </>
                     )}

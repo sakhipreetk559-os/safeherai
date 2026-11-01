@@ -29,43 +29,43 @@ function MapController({ bounds, center }) {
   return null;
 }
 
-// Custom DivIcon Builders
+// Custom DivIcon Builders with Crisp Halo Styling
 function createPinIcon(type, label = '', number = null) {
   let bgClass = 'bg-slate-700 text-white';
   let innerHtml = '';
 
   if (type === 'start') {
-    bgClass = 'bg-emerald-500 text-slate-950 font-black shadow-lg shadow-emerald-500/50 ring-2 ring-emerald-300';
+    bgClass = 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-obsidian-950 font-black shadow-glow-emerald ring-2 ring-emerald-300';
     innerHtml = `<span style="font-size: 11px; font-weight: 900;">A</span>`;
   } else if (type === 'destination') {
-    bgClass = 'bg-rose-500 text-white font-black shadow-lg shadow-rose-500/50 ring-2 ring-rose-300';
+    bgClass = 'bg-gradient-to-tr from-rose-500 to-pink-500 text-white font-black shadow-glow-rose ring-2 ring-rose-300';
     innerHtml = `<span style="font-size: 11px; font-weight: 900;">B</span>`;
   } else if (type === 'waypoint') {
-    bgClass = 'bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/50 ring-2 ring-cyan-200';
+    bgClass = 'bg-gradient-to-tr from-cyan-400 to-blue-500 text-obsidian-950 font-black shadow-glow-cyan ring-2 ring-cyan-200';
     innerHtml = `<span style="font-size: 10px; font-weight: 900;">${number || '•'}</span>`;
   } else if (type === 'police') {
-    bgClass = 'bg-blue-600 text-white ring-2 ring-blue-300 shadow-lg shadow-blue-600/60';
+    bgClass = 'bg-blue-600 text-white ring-2 ring-blue-300/80 shadow-lg shadow-blue-600/50';
     innerHtml = `
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
     `;
   } else if (type === 'hospital') {
-    bgClass = 'bg-emerald-600 text-white ring-2 ring-emerald-300 shadow-lg shadow-emerald-600/60';
+    bgClass = 'bg-emerald-600 text-white ring-2 ring-emerald-300/80 shadow-lg shadow-emerald-600/50';
     innerHtml = `
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 5v14M5 12h14"/>
       </svg>
     `;
   } else if (type === 'liquor') {
-    bgClass = 'bg-amber-600 text-white ring-2 ring-amber-300 shadow-lg shadow-amber-600/60';
+    bgClass = 'bg-amber-600 text-white ring-2 ring-amber-300/80 shadow-lg shadow-amber-600/50';
     innerHtml = `
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M8 22h8M12 11v11M19 3l-7 8-7-8h14z"/>
       </svg>
     `;
   } else if (type === 'accident') {
-    bgClass = 'bg-zinc-950 text-amber-400 ring-2 ring-amber-400 shadow-lg shadow-amber-500/60';
+    bgClass = 'bg-obsidian-950 text-amber-400 ring-2 ring-amber-400 shadow-lg shadow-amber-500/50';
     innerHtml = `
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
@@ -74,14 +74,14 @@ function createPinIcon(type, label = '', number = null) {
       </svg>
     `;
   } else if (type === 'shelter') {
-    bgClass = 'bg-violet-600 text-white ring-2 ring-violet-300 shadow-lg shadow-violet-600/60';
+    bgClass = 'bg-violet-600 text-white ring-2 ring-violet-300/80 shadow-lg shadow-violet-600/50';
     innerHtml = `
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 2h-3a4 4 0 0 0-4 4v14h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 2v20M6 10h5"/>
       </svg>
     `;
   } else if (type === 'nearest-target') {
-    bgClass = 'bg-cyan-400 text-slate-950 ring-4 ring-cyan-300/80 shadow-2xl shadow-cyan-400 animate-bounce';
+    bgClass = 'bg-cyan-400 text-obsidian-950 ring-4 ring-cyan-300 shadow-2xl shadow-cyan-400 animate-bounce';
     innerHtml = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -90,7 +90,7 @@ function createPinIcon(type, label = '', number = null) {
     `;
   }
 
-  const size = (type === 'start' || type === 'destination' || type === 'nearest-target') ? 30 : 25;
+  const size = (type === 'start' || type === 'destination' || type === 'nearest-target') ? 32 : 26;
 
   return L.divIcon({
     className: 'custom-leaflet-pin',
@@ -129,7 +129,7 @@ export function MapView({
     setLayers(prev => ({ ...prev, [layerKey]: !prev[layerKey] }));
   };
 
-  // Compute POI counts for badges
+  // POI counts
   const poiCounts = useMemo(() => {
     return {
       police: corridorPois.filter(p => p.category === 'police').length,
@@ -149,10 +149,13 @@ export function MapView({
     });
     if (destination?.lat && destination?.lng) latLngs.push([destination.lat, destination.lng]);
 
-    // Active route points
+    // Active route points (ensure coordinates belong to current metro corridor)
     const active = routes.find(r => r.id === activeRouteId);
     if (active?.coordinates && active.coordinates.length > 0) {
-      active.coordinates.forEach(c => latLngs.push(c));
+      const first = active.coordinates[0];
+      if (!startPoint?.lat || haversineKm(startPoint.lat, startPoint.lng, first[0], first[1]) < 50) {
+        active.coordinates.forEach(c => latLngs.push(c));
+      }
     }
 
     if (latLngs.length >= 2) {
@@ -169,82 +172,82 @@ export function MapView({
   const activeRoute = routes.find(r => r.id === activeRouteId) || routes[0];
 
   return (
-    <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-800/90 shadow-2xl bg-slate-950 isolate z-0">
-      {/* Floating Map Intelligence Bar (Controlled z-index within map canvas) */}
-      <div className="absolute top-3 right-3 z-[400] bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-1.5 shadow-2xl flex flex-wrap items-center gap-1.5 max-w-[95vw]">
-        <div className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 hidden sm:flex items-center space-x-1">
-          <Layers className="w-3 h-3 text-cyan-400" />
-          <span>Intel:</span>
+    <div className="relative w-full h-full rounded-3xl overflow-hidden border border-white/[0.08] shadow-glass bg-obsidian-950 isolate z-0">
+      {/* Floating Map Intelligence Bar */}
+      <div className="absolute top-3 right-3 z-[400] bg-obsidian-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-wrap items-center gap-1.5 max-w-[95vw]">
+        <div className="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hidden sm:flex items-center space-x-1.5">
+          <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <span>INTEL:</span>
         </div>
 
         <button
           onClick={() => toggleLayer('police')}
-          className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+          className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${
             layers.police
-              ? 'bg-blue-500/20 text-blue-300 border border-blue-500/50 shadow-sm'
-              : 'bg-slate-800/80 text-slate-400 border border-slate-700 opacity-60'
+              ? 'bg-blue-500/20 text-blue-200 border border-blue-400/50 shadow-sm'
+              : 'bg-obsidian-800 text-slate-400 border border-white/[0.06] opacity-60'
           }`}
           title="Toggle Police Stations"
         >
-          <Shield className="w-3 h-3 text-blue-400" />
+          <Shield className="w-3.5 h-3.5 text-blue-400" />
           <span>Police</span>
-          <span className="text-[10px] px-1 rounded-full bg-blue-500/30 text-blue-200 ml-0.5">{poiCounts.police}</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/30 text-blue-200 font-black ml-0.5">{poiCounts.police}</span>
         </button>
 
         <button
           onClick={() => toggleLayer('hospital')}
-          className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+          className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${
             layers.hospital
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-sm'
-              : 'bg-slate-800/80 text-slate-400 border border-slate-700 opacity-60'
+              ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/50 shadow-sm'
+              : 'bg-obsidian-800 text-slate-400 border border-white/[0.06] opacity-60'
           }`}
           title="Toggle Hospitals"
         >
-          <Cross className="w-3 h-3 text-emerald-400" />
+          <Cross className="w-3.5 h-3.5 text-emerald-400" />
           <span>Hospitals</span>
-          <span className="text-[10px] px-1 rounded-full bg-emerald-500/30 text-emerald-200 ml-0.5">{poiCounts.hospital}</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/30 text-emerald-200 font-black ml-0.5">{poiCounts.hospital}</span>
         </button>
 
         <button
           onClick={() => toggleLayer('liquor')}
-          className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+          className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${
             layers.liquor
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm'
-              : 'bg-slate-800/80 text-slate-400 border border-slate-700 opacity-60'
+              ? 'bg-amber-500/20 text-amber-200 border border-amber-400/50 shadow-sm'
+              : 'bg-obsidian-800 text-slate-400 border border-white/[0.06] opacity-60'
           }`}
           title="Toggle Liquor Shops & Bars"
         >
-          <Wine className="w-3 h-3 text-amber-400" />
+          <Wine className="w-3.5 h-3.5 text-amber-400" />
           <span>Bars/Liquor</span>
-          <span className="text-[10px] px-1 rounded-full bg-amber-500/30 text-amber-200 ml-0.5">{poiCounts.liquor}</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-200 font-black ml-0.5">{poiCounts.liquor}</span>
         </button>
 
         <button
           onClick={() => toggleLayer('accident')}
-          className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+          className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${
             layers.accident
-              ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50 shadow-sm'
-              : 'bg-slate-800/80 text-slate-400 border border-slate-700 opacity-60'
+              ? 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/50 shadow-sm'
+              : 'bg-obsidian-800 text-slate-400 border border-white/[0.06] opacity-60'
           }`}
           title="Toggle Accident Blackspots"
         >
-          <AlertTriangle className="w-3 h-3 text-yellow-400" />
+          <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" />
           <span>Blackspots</span>
-          <span className="text-[10px] px-1 rounded-full bg-yellow-500/30 text-yellow-200 ml-0.5">{poiCounts.accident}</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-yellow-500/30 text-yellow-200 font-black ml-0.5">{poiCounts.accident}</span>
         </button>
 
         <button
           onClick={() => toggleLayer('shelter')}
-          className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition ${
+          className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${
             layers.shelter
-              ? 'bg-violet-500/20 text-violet-300 border border-violet-500/50 shadow-sm'
-              : 'bg-slate-800/80 text-slate-400 border border-slate-700 opacity-60'
+              ? 'bg-violet-500/20 text-violet-200 border border-violet-400/50 shadow-sm'
+              : 'bg-obsidian-800 text-slate-400 border border-white/[0.06] opacity-60'
           }`}
           title="Toggle Safe Havens & Cafes"
         >
-          <Coffee className="w-3 h-3 text-violet-400" />
+          <Coffee className="w-3.5 h-3.5 text-violet-400" />
           <span>Shelters</span>
-          <span className="text-[10px] px-1 rounded-full bg-violet-500/30 text-violet-200 ml-0.5">{poiCounts.shelter}</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-violet-500/30 text-violet-200 font-black ml-0.5">{poiCounts.shelter}</span>
         </button>
       </div>
 
@@ -257,7 +260,6 @@ export function MapView({
       >
         <MapController bounds={mapBounds} center={defaultCenter} />
 
-        {/* 100% Free OpenStreetMap Standard Tiles (Zero API key needed) */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -266,7 +268,7 @@ export function MapView({
 
         {/* Inactive Alternative Route Polylines */}
         {routes
-          .filter(r => r.id !== activeRouteId)
+          .filter(r => r.id !== activeRouteId && (!startPoint || !r.coordinates?.[0] || haversineKm(startPoint.lat, startPoint.lng, r.coordinates[0][0], r.coordinates[0][1]) < 50))
           .map(r => (
             <Polyline
               key={r.id}
@@ -284,14 +286,14 @@ export function MapView({
           ))}
 
         {/* Active Route Polyline with Soft Outer Glow */}
-        {activeRoute && (
+        {activeRoute && (!startPoint || !activeRoute.coordinates?.[0] || haversineKm(startPoint.lat, startPoint.lng, activeRoute.coordinates[0][0], activeRoute.coordinates[0][1]) < 50) && (
           <>
             <Polyline
               positions={activeRoute.coordinates}
               pathOptions={{
                 color: activeRoute.color,
                 weight: 10,
-                opacity: 0.3
+                opacity: 0.35
               }}
             />
             <Polyline
@@ -299,7 +301,7 @@ export function MapView({
               pathOptions={{
                 color: activeRoute.color,
                 weight: 5,
-                opacity: 0.95
+                opacity: 0.98
               }}
             />
           </>
@@ -315,7 +317,7 @@ export function MapView({
             pathOptions={{
               color: '#06b6d4',
               weight: 3,
-              opacity: 0.9,
+              opacity: 0.95,
               dashArray: '6, 6'
             }}
           />
@@ -369,8 +371,8 @@ export function MapView({
           </Marker>
         )}
 
-        {/* Nearest Safe Haven Beacon Marker */}
-        {nearestSafeHaven && (
+        {/* Nearest Safe Haven Beacon Marker (strictly within current corridor) */}
+        {nearestSafeHaven && (!startPoint || haversineKm(startPoint.lat, startPoint.lng, nearestSafeHaven.lat, nearestSafeHaven.lng) <= 5.0) && (
           <Marker
             position={[nearestSafeHaven.lat, nearestSafeHaven.lng]}
             icon={createPinIcon('nearest-target')}

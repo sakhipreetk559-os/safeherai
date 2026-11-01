@@ -102,6 +102,10 @@ export default function App() {
     setStartPoint(preset.start);
     setWaypoints(preset.waypoints || []);
     setDestination(preset.destination);
+    setRoutes([]);
+    setSafetyAnalysis({});
+    setNearestHaven(null);
+    setActivePois([]);
 
     const points = [preset.start, ...(preset.waypoints || []), preset.destination];
     await executeRouteCalculation(points, preset.destination, preset.id);
@@ -109,6 +113,10 @@ export default function App() {
 
   // Manual Trigger
   const handleManualCalculate = () => {
+    setRoutes([]);
+    setSafetyAnalysis({});
+    setNearestHaven(null);
+    setActivePois([]);
     const validPoints = [startPoint, ...waypoints.filter(w => w.lat && w.lng), destination];
     executeRouteCalculation(validPoints, destination, activePresetId);
   };

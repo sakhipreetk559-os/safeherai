@@ -7,22 +7,23 @@ import {
   Cross, 
   Shield, 
   Coffee, 
-  Info,
-  MapPin,
-  TrendingUp,
+  Info, 
+  MapPin, 
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  TrendingUp,
+  Activity
 } from 'lucide-react';
 
 export function SafetyScoreCard({ analysis, activeRoute, destination }) {
   if (!analysis) {
     return (
-      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-5 shadow-2xl text-center space-y-3">
-        <div className="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/20 text-pink-400 mx-auto flex items-center justify-center">
+      <div className="glass-panel rounded-3xl p-6 shadow-glass text-center space-y-3">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 text-cyan-300 mx-auto flex items-center justify-center">
           <Sparkles className="w-6 h-6 animate-pulse" />
         </div>
         <div>
-          <h3 className="font-extrabold text-sm text-slate-100">SafeHer AI Safety Sentinel</h3>
+          <h3 className="font-extrabold text-sm text-white">SafeHer AI Sentinel</h3>
           <p className="text-xs text-slate-400 mt-1">
             Calculating real-time corridor risk analysis and AI safety scoring...
           </p>
@@ -36,12 +37,12 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
   const isHighSafe = safetyScore >= 85;
   const isModSafe = safetyScore >= 68 && safetyScore < 85;
 
-  const ringColor = isHighSafe ? '#10b981' : isModSafe ? '#f59e0b' : '#ef4444';
+  const ringColor = isHighSafe ? '#10b981' : isModSafe ? '#f59e0b' : '#f43f5e';
   const tierBg = isHighSafe
-    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+    ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-300 shadow-glow-emerald'
     : isModSafe
-    ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
-    : 'bg-rose-500/15 border-rose-500/40 text-rose-300';
+    ? 'bg-amber-500/15 border-amber-400/40 text-amber-300'
+    : 'bg-rose-500/15 border-rose-400/40 text-rose-300 shadow-glow-rose';
 
   const tierText = isHighSafe
     ? 'Level 1: Shielded Safe Corridor'
@@ -51,29 +52,29 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
 
   // SVG Circular Meter math
   const strokeWidth = 7;
-  const radius = 36;
+  const radius = 38;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (safetyScore / 100) * circumference;
 
   return (
-    <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-      {/* Top Banner: Score Gauge & Tier */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 pb-4 border-b border-slate-800/80">
+    <div className="glass-panel rounded-3xl p-5 sm:p-6 shadow-glass space-y-5">
+      {/* Top Banner: Score Gauge & Tier Assessment */}
+      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 pb-4 border-b border-white/[0.08]">
         <div className="flex items-center space-x-4">
-          {/* Circular Progress Meter */}
-          <div className="relative w-22 h-22 flex items-center justify-center flex-shrink-0">
-            <svg className="w-22 h-22 transform -rotate-90">
+          {/* Circular Progress Gauge */}
+          <div className="relative w-24 h-24 flex items-center justify-center flex-shrink-0">
+            <svg className="w-24 h-24 transform -rotate-90">
               <circle
-                cx="44"
-                cy="44"
+                cx="48"
+                cy="48"
                 r={radius}
-                stroke="#1e293b"
+                stroke="rgba(255, 255, 255, 0.08)"
                 strokeWidth={strokeWidth}
                 fill="transparent"
               />
               <circle
-                cx="44"
-                cy="44"
+                cx="48"
+                cy="48"
                 r={radius}
                 stroke={ringColor}
                 strokeWidth={strokeWidth}
@@ -86,19 +87,20 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
             </svg>
             <div className="absolute flex flex-col items-center justify-center">
               <span className="text-2xl font-black tracking-tight text-white">{safetyScore}%</span>
-              <span className="text-[9px] uppercase tracking-wider font-black text-slate-400">Score</span>
+              <span className="text-[9px] uppercase tracking-widest font-black text-slate-400">SCORE</span>
             </div>
           </div>
 
-          {/* Title & Badge */}
+          {/* Title & Classification */}
           <div className="space-y-1.5 text-center sm:text-left">
-            <span className="text-[10px] font-black uppercase tracking-wider text-pink-400">
-              SafeHer AI Sentinel Rating
+            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 flex items-center justify-center sm:justify-start space-x-1">
+              <Activity className="w-3 h-3 text-cyan-400" />
+              <span>AI CORRIDOR AUDIT</span>
             </span>
-            <h3 className="font-black text-base text-white">
+            <h3 className="font-extrabold text-base text-white">
               {activeRoute ? activeRoute.name : 'Analyzed Route'}
             </h3>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${tierBg}`}>
+            <span className={`inline-flex items-center px-3 py-0.5 rounded-full text-xs font-black border ${tierBg}`}>
               {isHighSafe ? <ShieldCheck className="w-3.5 h-3.5 mr-1" /> : <ShieldAlert className="w-3.5 h-3.5 mr-1" />}
               {tierText}
             </span>
@@ -108,38 +110,40 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
         {/* Quick Corridor Distance & ETA */}
         {activeRoute && (
           <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto text-xs text-slate-400 pt-1">
-            <span className="font-semibold text-[11px] text-slate-400">Route Analytics</span>
-            <div className="flex items-center space-x-1.5 mt-0.5">
+            <span className="font-semibold text-[10px] uppercase tracking-wider text-slate-400">Total Commute</span>
+            <div className="flex items-center space-x-2 mt-0.5">
               <span className="text-white font-black text-sm">{activeRoute.durationMin} mins</span>
               <span>•</span>
-              <span className="text-slate-300 font-bold">{activeRoute.distanceKm} km</span>
+              <span className="text-cyan-300 font-bold">{activeRoute.distanceKm} km</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* AI Summary Note */}
-      <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-slate-200 flex items-start space-x-2.5 leading-relaxed">
-        <Info className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-        <p>{summary}</p>
+      {/* AI Intelligence Summary Note */}
+      <div className="p-3.5 rounded-2xl bg-obsidian-900/60 border border-white/[0.08] text-xs text-slate-200 flex items-start space-x-3 leading-relaxed">
+        <div className="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex-shrink-0 mt-0.5">
+          <Info className="w-3.5 h-3.5" />
+        </div>
+        <p className="font-medium text-[11.5px] leading-relaxed">{summary}</p>
       </div>
 
       {/* 5 Safety Metric Breakdowns */}
-      <div className="space-y-2">
-        <h4 className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-          Corridor Risk Breakdown
+      <div className="space-y-2.5">
+        <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          CORRIDOR RISK MATRIX
         </h4>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
           {/* Police & Women Cells */}
-          <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/70 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+          <div className="p-3 rounded-2xl bg-obsidian-900/60 border border-white/[0.06] hover:border-white/10 flex items-center justify-between transition-all">
+            <div className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/30">
                 <Shield className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-100 block">Police & Women Desks</span>
-                <span className="text-[10px] text-slate-400">{breakdown?.police?.status || 'Coverage active'}</span>
+                <span className="font-extrabold text-white block">Police & Women Desks</span>
+                <span className="text-[10px] text-slate-400">{breakdown?.police?.status || 'Active response'}</span>
               </div>
             </div>
             <div className="text-right">
@@ -149,14 +153,14 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
           </div>
 
           {/* 24/7 Hospitals */}
-          <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/70 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <div className="p-3 rounded-2xl bg-obsidian-900/60 border border-white/[0.06] hover:border-white/10 flex items-center justify-between transition-all">
+            <div className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                 <Cross className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-100 block">24/7 Emergency Hospitals</span>
-                <span className="text-[10px] text-slate-400">{breakdown?.hospital?.status || 'Available'}</span>
+                <span className="font-extrabold text-white block">24/7 Hospitals & Trauma</span>
+                <span className="text-[10px] text-slate-400">{breakdown?.hospital?.status || 'Immediate access'}</span>
               </div>
             </div>
             <div className="text-right">
@@ -166,17 +170,17 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
           </div>
 
           {/* Liquor Shops & Bars */}
-          <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/70 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className={`p-1.5 rounded-lg border ${
+          <div className="p-3 rounded-2xl bg-obsidian-900/60 border border-white/[0.06] hover:border-white/10 flex items-center justify-between transition-all">
+            <div className="flex items-center space-x-2.5">
+              <div className={`p-2 rounded-xl border ${
                 (breakdown?.liquor?.count || 0) > 0
-                  ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
-                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                  : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
               }`}>
                 <Wine className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-100 block">Liquor Outlets & Bars</span>
+                <span className="font-extrabold text-white block">Liquor Outlets & Bars</span>
                 <span className="text-[10px] text-slate-400">{breakdown?.liquor?.status || 'Zero risk'}</span>
               </div>
             </div>
@@ -191,18 +195,18 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
           </div>
 
           {/* Accident Blackspots */}
-          <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/70 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className={`p-1.5 rounded-lg border ${
+          <div className="p-3 rounded-2xl bg-obsidian-900/60 border border-white/[0.06] hover:border-white/10 flex items-center justify-between transition-all">
+            <div className="flex items-center space-x-2.5">
+              <div className={`p-2 rounded-xl border ${
                 (breakdown?.accident?.count || 0) > 0
-                  ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
-                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  ? 'bg-rose-500/15 text-rose-400 border-rose-500/40'
+                  : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
               }`}>
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-100 block">Accident Blackspots</span>
-                <span className="text-[10px] text-slate-400">{breakdown?.accident?.status || 'Low risk'}</span>
+                <span className="font-extrabold text-white block">Accident Blackspots</span>
+                <span className="text-[10px] text-slate-400">{breakdown?.accident?.status || 'Safe highway'}</span>
               </div>
             </div>
             <div className="text-right">
@@ -216,14 +220,14 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
           </div>
 
           {/* Safe Public Shelters */}
-          <div className="p-2.5 rounded-xl bg-slate-800/50 border border-slate-700/70 flex items-center justify-between sm:col-span-2">
-            <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-violet-500/10 text-violet-400 border border-violet-500/20">
+          <div className="p-3 rounded-2xl bg-obsidian-900/60 border border-white/[0.06] hover:border-white/10 flex items-center justify-between sm:col-span-2 transition-all">
+            <div className="flex items-center space-x-2.5">
+              <div className="p-2 rounded-xl bg-violet-500/15 text-violet-400 border border-violet-500/30">
                 <Coffee className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-100 block">Safe Public Shelters (Hotels & Cafes)</span>
-                <span className="text-[10px] text-slate-400">{breakdown?.safeHaven?.status || 'Populated shelter'}</span>
+                <span className="font-extrabold text-white block">Safe Public Shelters (Hotels & Cafes)</span>
+                <span className="text-[10px] text-slate-400">{breakdown?.safeHaven?.status || 'Populated stops'}</span>
               </div>
             </div>
             <div className="text-right">
@@ -236,24 +240,26 @@ export function SafetyScoreCard({ analysis, activeRoute, destination }) {
 
       {/* Destination Safety Audit Card */}
       {destinationAudit && (
-        <div className="pt-3 border-t border-slate-800/80 space-y-2">
+        <div className="pt-3 border-t border-white/[0.08] space-y-2.5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-1.5 text-[11px] font-black uppercase tracking-wider text-pink-400">
+            <div className="flex items-center space-x-1.5 text-[10px] font-black uppercase tracking-widest text-cyan-400">
               <MapPin className="w-3.5 h-3.5" />
-              <span>Destination Area Audit</span>
+              <span>DESTINATION POINT AUDIT</span>
             </div>
-            <span className="text-xs font-black text-white bg-slate-800/90 px-2.5 py-0.5 rounded-full border border-slate-700">
+            <span className="text-xs font-black text-white bg-obsidian-800 px-3 py-0.5 rounded-full border border-white/10 shadow-sm">
               {destinationAudit.score}% Safe
             </span>
           </div>
 
-          <div className="bg-slate-800/50 border border-slate-700/70 rounded-xl p-3 text-xs space-y-2">
+          <div className="bg-obsidian-900/60 border border-white/[0.06] rounded-2xl p-3.5 text-xs space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-100 font-bold truncate pr-2">{destinationAudit.name}</span>
-              <span className="text-[10px] text-emerald-400 font-bold whitespace-nowrap">{destinationAudit.lightingRating}</span>
+              <span className="text-white font-extrabold truncate pr-2">{destinationAudit.name}</span>
+              <span className="text-[10px] text-emerald-400 font-bold whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                {destinationAudit.lightingRating}
+              </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-slate-700/40 text-slate-300">
+            <div className="grid grid-cols-2 gap-2 text-[11px] pt-1.5 border-t border-white/[0.06] text-slate-300">
               <div className="flex items-center space-x-1.5">
                 <Shield className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
                 <span>Police: {destinationAudit.policeCount} nearby</span>
