@@ -14,7 +14,7 @@ const OVERPASS_ENDPOINTS = [
  * Takes route polylines, destination point, and user filter toggles.
  * Returns enriched POIs for each route and calculated 0-100% Safety Score.
  */
-export async function analyzeRouteSafety(route, destination, filters = {}, isNightMode = true) {
+export async function analyzeRouteSafety(route, destination, filters = {}, isNightMode = false) {
   const coords = route.coordinates; // [[lat, lng], ...]
   const bbox = calculateBBox(coords);
 

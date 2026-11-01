@@ -34,7 +34,7 @@ export default function App() {
     showSafeStopovers: true
   });
 
-  const [isNightMode, setIsNightMode] = useState(true);
+  const [isNightMode, setIsNightMode] = useState(false);
 
   // Modals
   const [isSosOpen, setIsSosOpen] = useState(false);
