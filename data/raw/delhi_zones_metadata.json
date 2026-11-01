@@ -1,0 +1,167 @@
+[
+  {
+    "zone_name": "Connaught Place",
+    "category": "Commercial / High Footfall",
+    "lat": 28.6315,
+    "lng": 77.2167,
+    "base_lighting": 4.5,
+    "base_patrol": 4.2,
+    "base_transit_m": 120,
+    "commercial_density": 4.8,
+    "baseline_incident_weight": 0.45
+  },
+  {
+    "zone_name": "Hauz Khas Village",
+    "category": "Nightlife / Heritage / Transit",
+    "lat": 28.5494,
+    "lng": 77.2001,
+    "base_lighting": 3.8,
+    "base_patrol": 3.5,
+    "base_transit_m": 650,
+    "commercial_density": 4.0,
+    "baseline_incident_weight": 0.58
+  },
+  {
+    "zone_name": "Mukherjee Nagar (North Campus)",
+    "category": "Student Residential / Academic",
+    "lat": 28.7077,
+    "lng": 77.2144,
+    "base_lighting": 3.2,
+    "base_patrol": 2.8,
+    "base_transit_m": 450,
+    "commercial_density": 3.6,
+    "baseline_incident_weight": 0.62
+  },
+  {
+    "zone_name": "Rohini Sector 10",
+    "category": "Suburban Residential / Outer Transit",
+    "lat": 28.718,
+    "lng": 77.114,
+    "base_lighting": 2.6,
+    "base_patrol": 2.4,
+    "base_transit_m": 850,
+    "commercial_density": 2.5,
+    "baseline_incident_weight": 0.72
+  },
+  {
+    "zone_name": "Dwarka Mor Metro Interchange",
+    "category": "High Density Outer Transit Corridor",
+    "lat": 28.619,
+    "lng": 77.033,
+    "base_lighting": 3.0,
+    "base_patrol": 2.7,
+    "base_transit_m": 150,
+    "commercial_density": 3.8,
+    "baseline_incident_weight": 0.68
+  },
+  {
+    "zone_name": "Janakpuri West",
+    "category": "Commercial & Residential Hub",
+    "lat": 28.6294,
+    "lng": 77.0782,
+    "base_lighting": 3.9,
+    "base_patrol": 3.6,
+    "base_transit_m": 220,
+    "commercial_density": 4.2,
+    "baseline_incident_weight": 0.48
+  },
+  {
+    "zone_name": "Saket District Centre & Metro",
+    "category": "Commercial / Malls / Urban Transit",
+    "lat": 28.5244,
+    "lng": 77.2166,
+    "base_lighting": 4.2,
+    "base_patrol": 3.8,
+    "base_transit_m": 280,
+    "commercial_density": 4.5,
+    "baseline_incident_weight": 0.5
+  },
+  {
+    "zone_name": "Karol Bagh Market",
+    "category": "Dense Commercial Market",
+    "lat": 28.6514,
+    "lng": 77.1907,
+    "base_lighting": 3.7,
+    "base_patrol": 3.4,
+    "base_transit_m": 310,
+    "commercial_density": 4.7,
+    "baseline_incident_weight": 0.54
+  },
+  {
+    "zone_name": "Laxmi Nagar Metro Corridor",
+    "category": "Coaching Hub / High Density Transit",
+    "lat": 28.6306,
+    "lng": 77.2776,
+    "base_lighting": 2.9,
+    "base_patrol": 2.5,
+    "base_transit_m": 180,
+    "commercial_density": 4.1,
+    "baseline_incident_weight": 0.65
+  },
+  {
+    "zone_name": "Kashmere Gate ISBT & Hub",
+    "category": "Major Intercity Bus & Metro Terminal",
+    "lat": 28.6675,
+    "lng": 77.2285,
+    "base_lighting": 3.4,
+    "base_patrol": 3.6,
+    "base_transit_m": 90,
+    "commercial_density": 4.0,
+    "baseline_incident_weight": 0.66
+  },
+  {
+    "zone_name": "Anand Vihar ISBT & Railway",
+    "category": "Interstate Terminal / Border Hub",
+    "lat": 28.6472,
+    "lng": 77.316,
+    "base_lighting": 2.8,
+    "base_patrol": 3.0,
+    "base_transit_m": 110,
+    "commercial_density": 3.7,
+    "baseline_incident_weight": 0.74
+  },
+  {
+    "zone_name": "Noida Sector 18 (Atta Market)",
+    "category": "Retail & Metro Corridor",
+    "lat": 28.5708,
+    "lng": 77.3218,
+    "base_lighting": 4.1,
+    "base_patrol": 3.6,
+    "base_transit_m": 240,
+    "commercial_density": 4.6,
+    "baseline_incident_weight": 0.49
+  },
+  {
+    "zone_name": "Cyber City Gurugram",
+    "category": "Corporate IT Hub & Rapid Metro",
+    "lat": 28.4962,
+    "lng": 77.0895,
+    "base_lighting": 4.7,
+    "base_patrol": 4.4,
+    "base_transit_m": 180,
+    "commercial_density": 4.9,
+    "baseline_incident_weight": 0.38
+  },
+  {
+    "zone_name": "Chandni Chowk Old Delhi",
+    "category": "Historic Dense Heritage / Market",
+    "lat": 28.6506,
+    "lng": 77.2303,
+    "base_lighting": 3.1,
+    "base_patrol": 3.2,
+    "base_transit_m": 260,
+    "commercial_density": 4.6,
+    "baseline_incident_weight": 0.55
+  },
+  {
+    "zone_name": "Okhla Industrial Phase III",
+    "category": "Industrial Belt / Isolated Stretches",
+    "lat": 28.5355,
+    "lng": 77.271,
+    "base_lighting": 2.3,
+    "base_patrol": 2.1,
+    "base_transit_m": 980,
+    "commercial_density": 2.2,
+    "baseline_incident_weight": 0.81
+  }
+]

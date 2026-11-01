@@ -1,0 +1,144 @@
+{
+  "dataset": {
+    "total_records": 4500,
+    "train_records": 3600,
+    "test_records": 900,
+    "train_dates": [
+      "2022-01-01",
+      "2024-06-05"
+    ],
+    "test_dates": [
+      "2024-06-05",
+      "2024-12-31"
+    ]
+  },
+  "models_comparison": {
+    "logistic_regression": {
+      "accuracy": 0.8544444444444445,
+      "macro_f1": 0.8113189746859968
+    },
+    "random_forest": {
+      "accuracy": 0.8988888888888888,
+      "macro_f1": 0.8271628981500293
+    },
+    "xgboost": {
+      "accuracy": 0.8877777777777778,
+      "macro_f1": 0.8386378292769607
+    }
+  },
+  "champion_model": "xgboost",
+  "detailed_metrics": {
+    "High": {
+      "precision": 0.9,
+      "recall": 0.6136363636363636,
+      "f1-score": 0.7297297297297297,
+      "support": 44.0
+    },
+    "Low": {
+      "precision": 0.8715083798882681,
+      "recall": 0.899135446685879,
+      "f1-score": 0.8851063829787233,
+      "support": 347.0
+    },
+    "Moderate": {
+      "precision": 0.8984375,
+      "recall": 0.9037328094302554,
+      "f1-score": 0.901077375122429,
+      "support": 509.0
+    },
+    "accuracy": 0.8877777777777778,
+    "macro avg": {
+      "precision": 0.8899819599627561,
+      "recall": 0.8055015399174993,
+      "f1-score": 0.8386378292769607,
+      "support": 900.0
+    },
+    "weighted avg": {
+      "precision": 0.8881312170235879,
+      "recall": 0.8877777777777778,
+      "f1-score": 0.8865426743767127,
+      "support": 900.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      27,
+      0,
+      17
+    ],
+    [
+      0,
+      312,
+      35
+    ],
+    [
+      3,
+      46,
+      460
+    ]
+  ],
+  "classes": [
+    "High",
+    "Low",
+    "Moderate"
+  ],
+  "feature_importances": [
+    [
+      "hour_cos",
+      0.36632877588272095
+    ],
+    [
+      "street_lighting_score",
+      0.1257830411195755
+    ],
+    [
+      "commercial_density_score",
+      0.11936849355697632
+    ],
+    [
+      "hour_sin",
+      0.09096173197031021
+    ],
+    [
+      "patrol_frequency_score",
+      0.07008903473615646
+    ],
+    [
+      "transit_proximity_m",
+      0.04798634350299835
+    ],
+    [
+      "latitude",
+      0.04736902937293053
+    ],
+    [
+      "is_weekend",
+      0.045861247926950455
+    ],
+    [
+      "longitude",
+      0.03991818428039551
+    ],
+    [
+      "month_sin",
+      0.023715386167168617
+    ],
+    [
+      "month_cos",
+      0.022618701681494713
+    ]
+  ],
+  "feature_columns": [
+    "latitude",
+    "longitude",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "is_weekend",
+    "street_lighting_score",
+    "patrol_frequency_score",
+    "transit_proximity_m",
+    "commercial_density_score"
+  ]
+}
